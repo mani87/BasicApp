@@ -4,6 +4,8 @@ from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Le
 from app.models import User
 
 
+
+# LOGIN FORM
 class LoginForm(FlaskForm):
 	username = StringField('Username', validators=[DataRequired()])
 	password = PasswordField('Password', validators=[DataRequired()])
@@ -11,6 +13,7 @@ class LoginForm(FlaskForm):
 	submit = SubmitField('Sign In')
 
 
+# REGISTRATION FORM
 class RegistrationForm(FlaskForm):
 	username = StringField('Username', validators=[DataRequired()])	
 	email = StringField('Email', validators=[DataRequired(), Email()])
@@ -19,10 +22,17 @@ class RegistrationForm(FlaskForm):
 	submit = SubmitField('Register')
 
 
+	# # if a user touches but not change its username
+	# def __init__(self, original_username, *args, **kwargs):
+	# 	super(EditProfileForm, self).__init__(*args, **kwargs)
+	# 	self.original_username = original_username
+
+
 	def validate_username(self, username):
-		user = User.query.filter_by(username=username.data).first()
-		if user is not None:
-			raise ValidationError('Please use a different username!')
+		# if username.data != self.original_username:
+			user = User.query.filter_by(username=self.username.data).first()
+			if user is not None:
+				raise ValidationError('Please use a different username!')
 
 
 	def validate_email(self, email):
@@ -31,6 +41,8 @@ class RegistrationForm(FlaskForm):
 			raise ValidationError('Please use a different email')
 
 
+
+# EDIT PROFILE FORM
 class EditProfileForm(FlaskForm):
 	username = StringField('Username', validators=[DataRequired()])
 	about_me = TextAreaField('About me', validators=[Length(min=0, max=140)])
